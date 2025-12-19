@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot Hotel Costa Azul</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #e5e5f7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+
+      #chat-container {
+        width: 380px;
+        height: 600px;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+      }
+
+      #chat-header {
+        background: #004a99;
+        color: white;
+        padding: 20px;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      #chat-box {
+        flex: 1;
+        padding: 15px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        background: #f4f7f6;
+      }
+
+      .message {
+        padding: 10px 15px;
+        border-radius: 15px;
+        max-width: 80%;
+        font-size: 0.9rem;
+        line-height: 1.4;
+      }
+      .bot {
+        align-self: flex-start;
+        background: #e1e1e1;
+        color: #333;
+        border-bottom-left-radius: 2px;
+      }
+      .user {
+        align-self: flex-end;
+        background: #004a99;
+        color: white;
+        border-bottom-right-radius: 2px;
+      }
+
+      #quick-replies {
+        padding: 10px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        background: white;
+        border-top: 1px solid #eee;
+      }
+      .chip {
+        padding: 8px 12px;
+        background: white;
+        border: 1px solid #004a99;
+        color: #004a99;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        transition: 0.3s;
+      }
+      .chip:hover {
+        background: #004a99;
+        color: white;
+      }
+
+      #input-area {
+        display: flex;
+        padding: 15px;
+        background: white;
+        border-top: 1px solid #eee;
+      }
+      #user-input {
+        flex: 1;
+        border: 1px solid #ddd;
+        padding: 10px;
+        border-radius: 5px;
+        outline: none;
+      }
+      #send-btn {
+        background: #004a99;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        margin-left: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chat-container">
+      <div id="chat-header">Hotel Costa Azul 🌊</div>
+
+      <div id="chat-box"></div>
+
+      <div id="quick-replies">
+        <div class="chip" onclick="procesarEntrada('Servicios')">
+          🍽️ Servicios
+        </div>
+        <div class="chip" onclick="procesarEntrada('Habitaciones')">
+          🏨 Habitaciones
+        </div>
+        <div class="chip" onclick="procesarEntrada('Recomendaciones')">
+          📍 Recomendaciones
+        </div>
+        <div class="chip" onclick="procesarEntrada('Recepción')">
+          👤 Recepción
+        </div>
+      </div>
+
+      <div id="input-area">
+        <input
+          type="text"
+          id="user-input"
+          placeholder="Escribe tu duda aquí..."
+        />
+        <button id="send-btn" onclick="procesarEntrada()">Enviar</button>
+      </div>
+    </div>
+
+    <script>
+      const chatBox = document.getElementById("chat-box");
+      const userInput = document.getElementById("user-input");
+
+      window.onload = () => {
+        agregarMensaje(
+          "¡Hola! Bienvenido al Hotel Costa Azul. Soy tu asistente virtual. ¿En qué puedo ayudarte hoy?",
+          "bot"
+        );
+      };
+
+      function procesarEntrada(textoBoton) {
+        const mensaje = textoBoton || userInput.value.trim();
+        if (mensaje === "") return;
+
+        agregarMensaje(mensaje, "user");
+        userInput.value = "";
+
+        setTimeout(() => {
+          const respuesta = generarRespuesta(mensaje.toLowerCase());
+          agregarMensaje(respuesta, "bot");
+        }, 600);
+      }
+
+      function agregarMensaje(texto, remitente) {
+        const div = document.createElement("div");
+        div.classList.add("message", remitente);
+        div.innerText = texto;
+        chatBox.appendChild(div);
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      function generarRespuesta(input) {
+        if (input.includes("horario") || input.includes("check")) {
+          return "El check-in es a las 14:00h y el check-out a las 12:00h. El desayuno es de 07:30 a 10:30.";
+        }
+        if (input.includes("parking") || input.includes("aparcamiento")) {
+          return "Tenemos parking privado por 15€/día. No requiere reserva previa.";
+        }
+        if (input.includes("wifi") || input.includes("internet")) {
+          return "Ofrecemos Wi-Fi gratuito de alta velocidad en todas las habitaciones y áreas comunes.";
+        }
+        if (input.includes("mascota") || input.includes("perro")) {
+          return "Aceptamos mascotas de hasta 10kg con un suplemento de 20€ por noche.";
+        }
+        if (
+          input.includes("servicio") ||
+          input.includes("piscina") ||
+          input.includes("spa")
+        ) {
+          return "Contamos con piscina exterior, Spa de lujo y gimnasio abierto 24h para nuestros huéspedes.";
+        }
+
+        if (input.includes("habitacion") || input.includes("dormir")) {
+          return "Disponemos de habitaciones Estándar (2 personas), Familiares (4 personas) y Suites con vistas al mar. Todas incluyen desayuno.";
+        }
+        if (input.includes("precio") || input.includes("coste")) {
+          return "Los precios varían según la temporada y el tipo de habitación. Puedes consultar nuestras tarifas en la sección 'Habitaciones'.";
+        }
+        if (input.includes("vista") || input.includes("mar")) {
+          return "Nuestras Suites con vistas al mar ofrecen una experiencia única con balcones privados y decoración elegante.";
+        }
+        if (input.includes("cama") || input.includes("tipo")) {
+          return "Ofrecemos camas individuales, dobles y king size. También disponemos de habitaciones con camas adaptadas para personas con movilidad reducida.";
+        }
+        if (input.includes("desayuno") || input.includes("comida")) {
+          return "El desayuno buffet está incluido en la mayoría de las tarifas. Ofrecemos opciones vegetarianas, veganas y sin gluten.";
+        }
+
+        if (
+          input.includes("recomienda") ||
+          input.includes("hacer") ||
+          input.includes("turismo") ||
+          input.includes("cenar")
+        ) {
+          return "Te recomiendo visitar el Faro de la Costa. Para cenar, el restaurante 'La Sombrilla' es excelente para probar pescado local.";
+        }
+        if (
+          input.includes("recepcion") ||
+          input.includes("persona") ||
+          input.includes("hablar")
+        ) {
+          return "Entendido. Un momento... Estoy transfiriendo tu consulta a un recepcionista. Un agente te atenderá en unos minutos o puedes llamar al +34 9XX XXX XXX.";
+        }
+
+        return "Lo siento, no he entendido tu pregunta. ¿Te gustaría consultar nuestros 'Servicios', las 'Habitaciones' o hablar con 'Recepción'?";
+      }
+
+      userInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") procesarEntrada();
+      });
+    </script>
+  </body>
+</html>
